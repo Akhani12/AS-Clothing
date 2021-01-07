@@ -49,7 +49,6 @@ def Profile(request):
     return render(request, template, {})
 
 
-
 def Login(request):
     if request.method == 'POST':
 
@@ -84,38 +83,40 @@ def Register(request):
     form = NewUserForm
     return render(request=request, template_name="register.html", context={"register_form": form})
 
+
 def Logout(request):
     logout(request)
     return redirect('/home')
-# @login_required
-# @transaction.atomic
-# def editProfile(request):
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST or None, request.FILES or None, instance=request.user)
-#         profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, 'Your profile was successfully updated!')
-#             return redirect('profile')
-#         else:
-#             messages.error(request, 'Please correct the error below.')
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         profile_form = ProfileForm(instance=request.user.profile)
-#     return render(request, 'profileform.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })
-#
-#
-# # DeleteView
-# @login_required
-# def deleteProfile(request, pk):
-#     template = 'profiledelete.html'
-#     profile = get_object_or_404(User, pk=pk)
-#     if request.method == 'POST':
-#         profile.delete()
-#         return redirect('home')
-#     return render(request, template, {'object': profile})
 
+
+@login_required
+# @transaction.atomic
+def EditProfile(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST or None, request.FILES or None, instance=request.user)
+        profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'profileform.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+#
+#
+# DeleteView
+@login_required
+def deleteProfile(request, pk):
+    template = 'profiledelete.html'
+    profile = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        profile.delete()
+        return redirect('home')
+    return render(request, template, {'object': profile})
